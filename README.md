@@ -37,4 +37,4 @@
 	<li>Ejs</li>
 </ul>
 
-<p>Desenvolvido por Pedro Felipe - Aplicando conhecimentos Dev Front End</p>
+<p>Desenvolvido por Pedro Felipe - Aplicando conhecimentos Analista Desenvolvedor Web </p>
