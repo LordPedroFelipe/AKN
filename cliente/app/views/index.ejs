@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+
+		<!-- Pedro Felipe - AKN - Atendimento de Clientes -->
+		<title>AKN - Atendimento de Clientes</title>
+		
+		<!-- JQuery -->
+		<script type="text/javascript" src="js/jquery-2.2.1.js"></script>
+		<script type="text/javascript" src="js/jquerymask.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+		<!-- bootstrap - link cdn -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+	
+		<!-- favicon -->
+		<link rel="shortcut icon" href="images/favicon.ico" />
+	</head>
+	
+	<script>
+		$(document).ready(function(){
+
+			// Pedro Felipe - Funcoes
+			function carrega_motivos(){
+				// Pedro Felipe - Consumo da API para buscar motivos
+				var xhr = new XMLHttpRequest();
+				xhr.open("GET", "http://localhost:8080/api");
+
+				xhr.onload = function(){
+					if(xhr.status === 200){
+						var data = $.parseJSON(xhr.responseText);
+						console.log(data);
+
+						// Pedro Felipe - Percorre motivos
+						for (var x in data) {
+
+							$('#motivo').append(
+								'<option value="'+data[x]+'"> '+data[x]+' </option>'										
+							);
+						}
+					}
+				}
+
+				xhr.send();					
+			}
+
+			// Pedro Felipe - Chamada de funcoes
+			carrega_motivos();
+
+			// Pedro Felipe - Configura mascaras
+			$("#dataBoleto").mask("99/99/9999");
+			$("#cpf").mask("999.999.999-99");
+
+
+			// Pedro Felipe - Eventos
+			$("#motivo").change(function(){
+				if (this.value == "Re-emissão de boleto") {
+					$("#dataBoletoDiv").show();
+				} else {
+					$("#dataBoletoDiv").hide();
+				}
+			});
+
+
+			$("#btVoltar").click(function (){
+				 window.location.href = '/';
+			
+			});
+
+
+
+		});
+
+	</script>
+
+	<body>
+
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					
+					<img src="images/logo.png" height="50" width="200"/>
+				</div>
+
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="/">Contato</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+    	<% if ((exibeModal == 0)){ %>
+
+    		<div class="container">
+				<div class="row">
+		    		<div class="col-md-12">
+		    			<form action="/enviar" method="post">
+							<div class="form-group">
+								<label>Nome</label>
+								<input type="text" class="form-control" id="nome" name="nome" value="<%=contato.nome%>" placeholder="Nome do cliente">
+							</div>
+
+							<div class="form-group">
+								<label>E-mail</label>
+								<input type="text" class="form-control" id="email" name="email" value="<%=contato.email%>" placeholder="E-mail">
+							</div>
+							
+							<div class="form-group">
+								<label>CPF</label>
+								<input type="text" class="form-control" id="cpf" name="cpf" value="<%=contato.cpf%>" placeholder="CPF">
+							</div>
+							
+							<div class="form-group">
+								<label>Motivo do contato</label>
+								<select class="form-control" id="motivo" name="motivo" value="<%=contato.motivo %>">
+										<option value=""> Selecionar motivo </option>
+								</select>
+							</div>		
+
+							<div  id="dataBoletoDiv" style="display:none">
+								<div class="form-group"	>
+									<label>Data do boleto:</label>
+									<input type="text" class="form-control" id="dataBoleto" name="dataBoleto" value="<%=contato.data%>" placeholder="Nova data para boleto">
+								</div>				
+							</div>		
+
+							<div class="form-group">
+								<label>Mensagem</label>
+								<textarea class="form-control" id="mensagem" name="mensagem"><%=contato.mensagem%></textarea>
+							</div>	
+					
+					
+
+					    	<% if (validacao.length > 0) { %>
+								<div class="alert alert-danger">
+									<strong>Atenção!</strong>
+									<ul>
+										<% for ( var i = 0; i < validacao.length; i++) {%>
+										<li><%= validacao[i].msg %> </li>
+										<% } %>
+									</ul>
+								</div>
+							<% } %> 	
+
+							<button type="submit" class="btn btn-success">Enviar</button>
+						</form>
+			    	</div>
+		    	</div>
+
+		    </div>  
+
+    	<% } else { %>
+
+    		<div class="container">
+				<div class="row">
+		    		<div class="col-md-12">
+		 				<h3 ><%=contato.titulo%></h3>
+
+		 				<h4 >Nome: <%=contato.nome%></h4>
+		 				
+		 				<h5 >CPF: <%=contato.cpf%></h5>
+
+		 				<h5 >E-mail: <%=contato.email%></h5>
+						
+						</br>
+
+		 				<h4 ><%=contato.textoFinal%></h4>
+
+						<button type="button" class="btn btn-info" id="btVoltar">Voltar</button>
+		 	  		</div>
+		 	  	</div>
+		 	</div>
+
+    	<% } %>
+
+	</body>
+</html>
